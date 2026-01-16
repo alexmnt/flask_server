@@ -14,7 +14,7 @@ BASELINES = [
         "status": "active",
         "status_label": "Active",
         "owner": "Security team",
-        "action_label": "Open",
+        "action_label": "Action 1",
         "action_variant": "primary",
     },
     {
@@ -26,7 +26,7 @@ BASELINES = [
         "status": "warning",
         "status_label": "Needs review",
         "owner": "GRC",
-        "action_label": "Review",
+        "action_label": "Action 2",
         "action_variant": "warning",
     },
     {
@@ -38,7 +38,7 @@ BASELINES = [
         "status": "active",
         "status_label": "Active",
         "owner": "IT ops",
-        "action_label": "Open",
+        "action_label": "Action 3",
         "action_variant": "primary",
     },
     {
@@ -50,39 +50,39 @@ BASELINES = [
         "status": "idle",
         "status_label": "Paused",
         "owner": "Vendor mgmt",
-        "action_label": "Resume",
+        "action_label": "Action 4",
         "action_variant": "neutral",
     },
 ]
 
 STATUS_CARDS = [
     {
-        "kicker": "Active baselines",
+        "kicker": "Metric A",
         "value": "18",
-        "badge": "Stable",
+        "badge": "OK",
         "tone": "active",
-        "note": "Compliant in the last 30 days.",
+        "note": "Placeholder note A.",
     },
     {
-        "kicker": "Pending reviews",
+        "kicker": "Metric B",
         "value": "4",
-        "badge": "Attention",
+        "badge": "Warn",
         "tone": "warning",
-        "note": "Awaiting SME sign-off.",
+        "note": "Placeholder note B.",
     },
     {
-        "kicker": "Upcoming affirmations",
+        "kicker": "Metric C",
         "value": "2",
-        "badge": "Next 30 days",
+        "badge": "Next",
         "tone": "idle",
-        "note": "Schedule owners for annual checks.",
+        "note": "Placeholder note C.",
     },
     {
-        "kicker": "Upstream changes",
+        "kicker": "Metric D",
         "value": "1",
         "badge": "New",
         "tone": "active",
-        "note": "IHSA baseline update in progress.",
+        "note": "Placeholder note D.",
     },
 ]
 
