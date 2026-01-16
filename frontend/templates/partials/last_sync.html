@@ -1,0 +1,8 @@
+<p
+  class="body"
+  hx-get="{{ url_for('pages.last_sync') }}"
+  hx-trigger="load, every 60s"
+  hx-swap="outerHTML"
+>
+  Last sync: {{ last_sync }}
+</p>

@@ -1,0 +1,26 @@
+{% if baselines %}
+  {% for baseline in baselines %}
+    <tr>
+      <td>
+        <div class="table-title">{{ baseline.name }}</div>
+        <div class="table-subtitle">{{ baseline.subtitle }}</div>
+      </td>
+      <td>{{ baseline.version }}</td>
+      <td>{{ baseline.scope }}</td>
+      <td>{{ baseline.last_audit }}</td>
+      <td><span class="status-badge {{ baseline.status }}">{{ baseline.status_label }}</span></td>
+      <td>{{ baseline.owner }}</td>
+      <td>
+        <md-filled-button class="table-action" data-variant="{{ baseline.action_variant }}" type="button">
+          {{ baseline.action_label }}
+        </md-filled-button>
+      </td>
+    </tr>
+  {% endfor %}
+{% else %}
+  <tr>
+    <td colspan="7" class="text-center text-sm text-[var(--muted-text)]">
+      No baselines available.
+    </td>
+  </tr>
+{% endif %}

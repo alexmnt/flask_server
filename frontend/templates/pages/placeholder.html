@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% set page_title = title %}
+{% set title = "ICV Tool — " ~ page_title %}
+
+{% block content %}
+  <section class="card flex flex-col gap-3">
+    <p class="kicker">Placeholder</p>
+    <h2 class="md-typescale-title-large">{{ page_title }}</h2>
+    <p class="body">
+      This section is a placeholder destination for the navigation menu. Replace it with the real
+      page when the workflow is ready.
+    </p>
+    <md-filled-button href="{{ url_for('pages.index') }}">Back to baselines</md-filled-button>
+  </section>
+{% endblock %}

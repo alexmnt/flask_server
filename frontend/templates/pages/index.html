@@ -1,0 +1,136 @@
+{% extends "layout.html" %}
+{% set title = "ICV Tool — Baselines" %}
+
+{% block content %}
+  {% include "partials/menu_grid.html" %}
+
+  <section class="card welcome-card flex flex-col gap-2">
+    <details class="welcome-details">
+      <summary class="flex items-center justify-between gap-4 list-none cursor-pointer">
+        <div class="welcome-summary flex flex-col gap-1.5">
+          <h2 class="md-typescale-title-large">Welcome Munteanu, Alexandru!</h2>
+          <p class="body mb-0">
+            ICV keeps UBS infrastructure platforms securely configured and compliant across the full
+            lifecycle. Expand for scope, governance, and support details.
+          </p>
+        </div>
+        <span class="welcome-toggle">
+          Details
+          <span class="welcome-toggle-icon" aria-hidden="true">⌄</span>
+        </span>
+      </summary>
+      <div class="welcome-body mt-3 flex flex-col gap-2.5">
+        <p class="body">
+          The Infrastructure Compliance Validation (ICV) Service helps UBS infrastructure teams keep
+          platforms securely configured and compliant throughout their lifecycle. It focuses on key
+          infrastructure technologies such as Operating Systems, Databases, Middleware, and cloud
+          services, and validates that approved hardening settings are applied and maintained over
+          time (not only at build, but also during ongoing operation and change).
+        </p>
+        <p class="body">
+          ICV supports the AM18 Key Procedural Control (KPC) by providing an evidence-based view of
+          security configuration compliance against approved hardening standards ("baselines"). These
+          baselines are maintained by the Infrastructure Hardening Standards Authority (IHSA), which
+          defines, approves, updates, and periodically revalidates AM18 standards to ensure they remain
+          aligned with UBS Cyber & Information Security Policy (CISP) and evolving security
+          requirements.
+        </p>
+        <p class="body">
+          This tool supports platform stakeholders (Owners, SMEs, and delegated roles) during annual
+          baseline affirmation and for controlled baseline updates when changes are needed (for
+          example, when upstream guidance changes, new controls appear, or a correction is required).
+        </p>
+        <ul class="welcome-list m-0 list-disc pl-4 space-y-1.5">
+          <li>Maintain and monitor approved hardening standards (baselines and controls).</li>
+          <li>Collect and evaluate compliance data to identify configuration gaps.</li>
+          <li>Report compliance status and trends to stakeholders.</li>
+          <li>Support remediation tracking and governance workflows to manage risk.</li>
+        </ul>
+        <div class="banner warning">
+          <span class="banner-icon">⚠️</span>
+          <span>NOPE platforms are not part of AM18 scope.</span>
+        </div>
+        <div class="banner info">
+          <span class="banner-icon">ℹ️</span>
+          <span>
+            Report issues with the ICV Tool to DL-ICV-IHSA (dl-icv-ihsa@ubs.com) or by opening a GitLab
+            issue in the IHSA GitLab Repository.
+          </span>
+        </div>
+        <div class="banner info">
+          <span class="banner-icon">ℹ️</span>
+          <div>
+            <p>
+              Use "Begin Affirmation" to complete your mandatory annual affirmation (the button
+              changes for "Continue Affirmation" for baselines that have incomplete affirmations).
+              This feature will toggle only annually.
+            </p>
+            <p>
+              Use "Raise a Change Request" to submit any other changes, except annual affirmations,
+              required for your baselines. This feature can be used throughout the year whenever
+              changes to an individual baseline control are required, including changes to severity
+              ratings or scope.
+            </p>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <section
+    class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+    hx-get="{{ url_for('pages.status_cards') }}"
+    hx-trigger="load, every 90s"
+    hx-swap="innerHTML"
+  >
+    {% include "partials/status_cards.html" %}
+  </section>
+
+  <section class="card table-card flex flex-col gap-4">
+    <div class="table-header flex flex-wrap items-start justify-between gap-3">
+      <div>
+        <p class="kicker">Baseline ownership</p>
+        <h2 class="md-typescale-title-large">Baselines assigned to you</h2>
+        <p class="body">
+          You are listed as the Platform Owner and/or Subject Matter Expert (SME) for the following
+          baselines.
+        </p>
+        <p
+          class="body"
+          hx-get="{{ url_for('pages.last_sync') }}"
+          hx-trigger="load, every 60s"
+          hx-swap="outerHTML"
+        >
+          Last sync: --
+        </p>
+      </div>
+      <div class="table-actions flex flex-wrap gap-2">
+        <md-filled-button type="button">New baseline</md-filled-button>
+        <md-outlined-button type="button">Export list</md-outlined-button>
+      </div>
+    </div>
+
+    <div class="table-wrap overflow-x-auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Baseline</th>
+            <th>Version</th>
+            <th>Scope</th>
+            <th>Last audit</th>
+            <th>Status</th>
+            <th>Owner</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody
+          hx-get="{{ url_for('pages.baseline_rows') }}"
+          hx-trigger="load, every 120s"
+          hx-swap="innerHTML"
+        >
+          {% include "partials/baseline_rows.html" %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

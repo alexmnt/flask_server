@@ -1,0 +1,16 @@
+{% if status_cards %}
+  {% for card in status_cards %}
+    <article class="card flex flex-col gap-2">
+      <p class="kicker">{{ card.kicker }}</p>
+      <div class="flex items-baseline justify-between gap-2">
+        <span class="md-typescale-title-large">{{ card.value }}</span>
+        <span class="status-badge {{ card.tone }}">{{ card.badge }}</span>
+      </div>
+      <p class="body">{{ card.note }}</p>
+    </article>
+  {% endfor %}
+{% else %}
+  <article class="card">
+    <p class="body">No status data available.</p>
+  </article>
+{% endif %}

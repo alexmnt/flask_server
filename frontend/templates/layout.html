@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title or "Flask + MD3" }}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500"
+      rel="stylesheet"
+    />
+
+    {{ vite_css('src/main.ts') }}
+  </head>
+
+  <body class="min-h-screen">
+    <header class="topbar sticky top-0 z-10 flex flex-col items-start gap-4 px-5 py-3.5 md:flex-row md:flex-wrap md:items-center md:justify-between">
+      <div class="brand flex items-center gap-3">
+        <div class="brand-badge" aria-hidden="true">UBS</div>
+        <div class="brand-text flex flex-col gap-0.5">
+          <span class="md-typescale-title-large">{{ brand_name or "ICV Tool" }}</span>
+          <span class="md-typescale-label-medium">
+            {{ brand_tagline or "Infrastructure Compliance Validation" }}
+          </span>
+        </div>
+      </div>
+
+      <div class="actions flex flex-wrap items-center gap-3">
+        {% block topbar_actions %}
+          <div class="user-chip flex items-center gap-2.5" aria-label="Signed in with Entra ID">
+            <span class="user-avatar">MA</span>
+            <div class="user-info flex flex-col gap-0.5">
+              <span class="user-name">Munteanu, Alexandru</span>
+              <span class="user-meta inline-flex items-center gap-1.5">
+                <span class="entra-logo">E</span>
+                Auto login (Entra ID)
+              </span>
+            </div>
+          </div>
+        {% endblock %}
+        {% include "partials/asset_health.html" %}
+        <md-icon-button aria-label="Toggle theme" onclick="toggleTheme()">
+          <span class="material-symbols-outlined">dark_mode</span>
+        </md-icon-button>
+      </div>
+    </header>
+
+    <main class="container mx-auto flex flex-col gap-5 px-4 py-5 md:px-6">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer md-typescale-body-small px-4 py-6 text-center md:px-5">
+      Built with Flask • Material Design 3-ish UI via Material Web Components
+    </footer>
+    {{ vite_js('src/main.ts') }}
+  </body>
+</html>
