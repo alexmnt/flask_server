@@ -16,14 +16,6 @@ type FetchOptions = RequestInit & {
 
 const DEFAULT_TIMEOUT_MS = 8000;
 
-const runIdle = (callback: () => void) => {
-  if ("requestIdleCallback" in window) {
-    window.requestIdleCallback(() => callback(), { timeout: 2000 });
-  } else {
-    window.setTimeout(callback, 1100);
-  }
-};
-
 const navTabs = document.querySelector<MdTabs>('md-tabs[data-nav="primary"]');
 const statusPill = document.querySelector<HTMLElement>('[data-status="pill"]');
 const statusText = document.querySelector<HTMLElement>('[data-status="text"]');
@@ -41,9 +33,13 @@ const assetJs = assetHealth?.querySelector<HTMLElement>('[data-asset="js"]');
 const menuGrid = document.querySelector<HTMLElement>(".menu-grid");
 const menuDrawer = document.querySelector<HTMLElement>("[data-menu-drawer]");
 const menuPanel = menuDrawer?.querySelector<HTMLElement>("[data-menu-panel]");
-const menuToggle = menuDrawer?.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+const menuToggles = menuDrawer?.querySelectorAll<HTMLElement>("[data-menu-toggle]") ?? [];
 const menuToggleText = menuDrawer?.querySelector<HTMLElement>("[data-menu-toggle-text]");
-const menuReopen = menuDrawer?.querySelector<HTMLButtonElement>("[data-menu-reopen]");
+const menuMore = menuDrawer?.querySelector<HTMLElement>("[data-menu-more]");
+const menuMoreText = menuDrawer?.querySelector<HTMLElement>("[data-menu-more-text]");
+const menuReopen = document.querySelector<HTMLElement>("[data-menu-reopen]");
+const topstack = document.querySelector<HTMLElement>(".topstack");
+const topbar = topstack?.querySelector<HTMLElement>(".topbar");
 const root = document.documentElement;
 
 const STATUS_LABELS: Record<string, string> = {
@@ -53,6 +49,18 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const hasStatusUI = Boolean(statusPill && statusText && statusTime && statusLatency);
+
+const syncTopstackHeight = () => {
+  if (!topstack) {
+    return;
+  }
+  const height = Math.ceil(topstack.getBoundingClientRect().height);
+  root.style.setProperty("--topstack-height", `${height}px`);
+  if (topbar) {
+    const barHeight = Math.ceil(topbar.getBoundingClientRect().height);
+    root.style.setProperty("--topbar-height", `${barHeight}px`);
+  }
+};
 
 const fetchJson = async <T>(input: RequestInfo | URL, options: FetchOptions = {}) => {
   const { timeoutMs = DEFAULT_TIMEOUT_MS, ...init } = options;
@@ -106,13 +114,25 @@ const setMenuState = (state: MenuState) => {
     return;
   }
   menuDrawer.dataset.state = state;
+  root.dataset.menuState = state;
   const expanded = state === "open";
   menuPanel?.setAttribute("aria-hidden", expanded ? "false" : "true");
-  menuToggle?.setAttribute("aria-expanded", String(expanded));
-  menuReopen?.setAttribute("aria-expanded", String(expanded));
+  menuToggles.forEach((toggle) => {
+    toggle.setAttribute("aria-expanded", String(expanded));
+  });
+  menuMore?.setAttribute("aria-expanded", String(expanded));
+  if (menuReopen) {
+    menuReopen.setAttribute("aria-expanded", String(expanded));
+    menuReopen.setAttribute("aria-hidden", String(expanded));
+    menuReopen.tabIndex = expanded ? -1 : 0;
+  }
   if (menuToggleText) {
     menuToggleText.textContent = expanded ? "Hide menu" : "Show menu";
   }
+  if (menuMoreText) {
+    menuMoreText.textContent = expanded ? "Less" : "More";
+  }
+  syncTopstackHeight();
 };
 
 function setStatus(state?: string, text?: string) {
@@ -197,12 +217,39 @@ if (navTabs) {
 }
 
 if (menuDrawer) {
+  const isSmallScreen = window.matchMedia("(max-width: 639px)").matches;
   const initialState = menuDrawer.dataset.state === "closed" ? "closed" : "open";
-  setMenuState(initialState);
+  const resolvedState = isSmallScreen ? "closed" : initialState;
+  setMenuState(resolvedState);
 }
 
-if (menuToggle) {
-  menuToggle.addEventListener("click", () => {
+if (topstack) {
+  syncTopstackHeight();
+  if ("ResizeObserver" in window) {
+    const observer = new ResizeObserver(() => {
+      syncTopstackHeight();
+    });
+    observer.observe(topstack);
+  }
+  window.addEventListener("resize", () => {
+    syncTopstackHeight();
+  });
+  window.addEventListener("load", () => {
+    syncTopstackHeight();
+  });
+}
+
+if (menuToggles.length) {
+  menuToggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      const current = menuDrawer?.dataset.state === "closed" ? "closed" : "open";
+      setMenuState(current === "open" ? "closed" : "open");
+    });
+  });
+}
+
+if (menuMore) {
+  menuMore.addEventListener("click", () => {
     const current = menuDrawer?.dataset.state === "closed" ? "closed" : "open";
     setMenuState(current === "open" ? "closed" : "open");
   });
@@ -214,10 +261,12 @@ if (menuReopen) {
   });
 }
 
-if (menuGrid) {
-  menuGrid.addEventListener("click", (event) => {
+if (menuDrawer) {
+  menuDrawer.addEventListener("click", (event) => {
     const target = event.target as HTMLElement | null;
-    const link = target?.closest<HTMLElement>('md-list-item[href][type="link"], a[href]');
+    const link = target?.closest<HTMLElement>(
+      'md-list-item[href][type="link"], a[href], md-filled-button[href], md-filled-tonal-button[href], md-outlined-button[href], md-text-button[href]'
+    );
     if (!link) {
       return;
     }
@@ -230,7 +279,19 @@ if (menuGrid) {
       }
     }
     const href = link.getAttribute("href");
-    if (!href || href.startsWith("#") || href === window.location.pathname) {
+    if (!href || href.startsWith("#")) {
+      return;
+    }
+    let url: URL;
+    try {
+      url = new URL(href, window.location.origin);
+    } catch {
+      return;
+    }
+    if (url.origin !== window.location.origin) {
+      return;
+    }
+    if (url.pathname === window.location.pathname && url.search === window.location.search) {
       return;
     }
     const targetAttr = link.getAttribute("target");
@@ -239,44 +300,81 @@ if (menuGrid) {
     }
     showPageLoader();
   });
+}
 
-  runIdle(() => {
-    const connection = (
-      navigator as Navigator & {
-        connection?: { saveData?: boolean; effectiveType?: string };
-      }
-    ).connection;
-    if (connection?.saveData) {
-      return;
+const prefetchedDocs = new Set<string>();
+
+const canPrefetch = () => {
+  const connection = (
+    navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
     }
-    const effectiveType = connection?.effectiveType;
-    if (effectiveType === "slow-2g" || effectiveType === "2g") {
-      return;
-    }
-    const prefetched = new Set<string>();
-    const links = Array.from(
-      menuGrid.querySelectorAll<HTMLElement>('md-list-item[href][type="link"], a[href]')
+  ).connection;
+  if (connection?.saveData) {
+    return false;
+  }
+  const effectiveType = connection?.effectiveType;
+  if (effectiveType === "slow-2g" || effectiveType === "2g") {
+    return false;
+  }
+  return true;
+};
+
+const prefetchDocument = (href: string) => {
+  if (!canPrefetch()) {
+    return;
+  }
+  if (!href || href.startsWith("#")) {
+    return;
+  }
+  let url: URL;
+  try {
+    url = new URL(href, window.location.origin);
+  } catch {
+    return;
+  }
+  if (url.origin !== window.location.origin) {
+    return;
+  }
+  if (url.pathname === window.location.pathname && url.search === window.location.search) {
+    return;
+  }
+  if (prefetchedDocs.has(url.href)) {
+    return;
+  }
+  prefetchedDocs.add(url.href);
+
+  const prefetch = document.createElement("link");
+  prefetch.rel = "prefetch";
+  prefetch.href = url.href;
+  prefetch.as = "document";
+  document.head.appendChild(prefetch);
+};
+
+const menuPrefetchRoot = menuDrawer ?? menuGrid;
+
+if (menuPrefetchRoot) {
+  const onPrefetchIntent = (event: Event) => {
+    const target = event.target as HTMLElement | null;
+    const link = target?.closest<HTMLElement>(
+      'md-list-item[href][type="link"], a[href], md-filled-button[href], md-filled-tonal-button[href], md-outlined-button[href], md-text-button[href]'
     );
-    links.forEach((link) => {
-      const href = link.getAttribute("href");
-      if (!href || href.startsWith("#")) {
-        return;
-      }
-      const url = new URL(href, window.location.origin);
-      if (url.origin !== window.location.origin || url.pathname === window.location.pathname) {
-        return;
-      }
-      if (prefetched.has(url.href)) {
-        return;
-      }
-      prefetched.add(url.href);
-      const prefetch = document.createElement("link");
-      prefetch.rel = "prefetch";
-      prefetch.href = url.href;
-      prefetch.as = "document";
-      document.head.appendChild(prefetch);
-    });
-  });
+    if (!link) {
+      return;
+    }
+    const href = link.getAttribute("href");
+    if (!href) {
+      return;
+    }
+    const targetAttr = link.getAttribute("target");
+    if (targetAttr && targetAttr !== "_self") {
+      return;
+    }
+    prefetchDocument(href);
+  };
+
+  menuPrefetchRoot.addEventListener("pointerover", onPrefetchIntent, { passive: true });
+  menuPrefetchRoot.addEventListener("focusin", onPrefetchIntent);
 }
 
 if (healthButton) {

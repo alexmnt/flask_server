@@ -92,35 +92,37 @@
       </div>
     </div>
 
-    <div class="topstack sticky top-0 z-10">
-      <header class="topbar flex flex-col items-start gap-4 px-5 py-3.5 md:flex-row md:flex-wrap md:items-center md:justify-between">
-        <div class="brand flex items-center gap-3">
-          <div class="brand-badge" aria-hidden="true">PHI</div>
-          <div class="brand-text flex flex-col gap-0.5">
-            <span class="md-typescale-title-large">{{ brand_name or "Placeholder Tool" }}</span>
-            <span class="md-typescale-label-medium">
-              {{ brand_tagline or "Place Holder" }}
-            </span>
-          </div>
-        </div>
-
-        <div class="actions flex flex-wrap items-center gap-3">
-          {% block topbar_actions %}
-            <div class="user-chip flex items-center gap-2.5" aria-label="Signed in with Entra ID">
-              <span class="user-avatar">MA</span>
-              <div class="user-info flex flex-col gap-0.5">
-                <span class="user-name">Munteanu, Alexandru</span>
-                <span class="user-meta inline-flex items-center gap-1.5">
-                  <span class="entra-logo">E</span>
-                  Auto login (Entra ID)
-                </span>
-              </div>
+    <div class="topstack">
+      <header class="topbar">
+        <div class="container mx-auto flex flex-col items-start gap-4 px-4 py-3.5 md:flex-row md:flex-wrap md:items-center md:justify-between md:px-6">
+          <div class="brand flex items-center gap-3">
+            <div class="brand-badge" aria-hidden="true">PHI</div>
+            <div class="brand-text flex flex-col gap-0.5">
+              <span class="md-typescale-title-large">{{ brand_name or "Placeholder Tool" }}</span>
+              <span class="md-typescale-label-medium">
+                {{ brand_tagline or "Place Holder" }}
+              </span>
             </div>
-          {% endblock %}
-          {% include "partials/asset_health.html" %}
-          <md-icon-button aria-label="Toggle theme" onclick="toggleTheme()">
-            <span class="material-symbols-outlined">dark_mode</span>
-          </md-icon-button>
+          </div>
+
+          <div class="actions flex flex-wrap items-center gap-3 w-full md:w-auto md:justify-end">
+            {% block topbar_actions %}
+              <div class="user-chip flex items-center gap-2.5" aria-label="Signed in with Entra ID">
+                <span class="user-avatar">MA</span>
+                <div class="user-info flex flex-col gap-0.5">
+                  <span class="user-name">Munteanu, Alexandru</span>
+                  <span class="user-meta inline-flex items-center gap-1.5">
+                    <span class="entra-logo">E</span>
+                    Auto login (Entra ID)
+                  </span>
+                </div>
+              </div>
+            {% endblock %}
+            {% include "partials/asset_health.html" %}
+            <md-icon-button aria-label="Toggle theme" onclick="toggleTheme()">
+              <span class="material-symbols-outlined">dark_mode</span>
+            </md-icon-button>
+          </div>
         </div>
       </header>
 
@@ -131,13 +133,24 @@
       </div>
     </div>
 
-    <main class="container mx-auto flex flex-col gap-5 px-4 py-5 md:px-6">
+    <main class="main-content container mx-auto flex flex-col gap-5 px-4 pb-5 md:px-6">
       {% block content %}{% endblock %}
     </main>
 
     <footer class="footer md-typescale-body-small px-4 py-6 text-center md:px-5">
       Built with Flask • Material Design 3-ish UI via Material Web Components
     </footer>
+    <button
+      class="menu-drawer__fab"
+      type="button"
+      data-menu-reopen
+      aria-controls="menu-grid"
+      aria-expanded="false"
+      aria-hidden="true"
+    >
+      <span class="material-symbols-outlined" aria-hidden="true">apps</span>
+      <span>Menu</span>
+    </button>
     {{ vite_js('src/main.ts') }}
   </body>
 </html>

@@ -4,23 +4,64 @@
       <p class="kicker">Quick launch</p>
       <p class="menu-drawer__headline">PHI workspace navigation</p>
     </div>
-    <button
-      class="menu-drawer__toggle"
-      type="button"
-      data-menu-toggle
-      aria-controls="menu-grid"
-      aria-expanded="true"
-    >
-      <span class="material-symbols-outlined menu-drawer__toggle-icon" aria-hidden="true">
-        expand_less
-      </span>
-      <span class="menu-drawer__toggle-text" data-menu-toggle-text>Hide menu</span>
-    </button>
+
+    <div class="menu-drawer__actions">
+      <md-outlined-button
+        class="menu-drawer__toggle"
+        type="button"
+        data-menu-toggle
+        aria-controls="menu-grid"
+        aria-expanded="true"
+      >
+        <span slot="icon" class="material-symbols-outlined menu-drawer__toggle-icon" aria-hidden="true">
+          expand_less
+        </span>
+        <span class="menu-drawer__toggle-text" data-menu-toggle-text>Hide menu</span>
+      </md-outlined-button>
+    </div>
   </div>
+
+  <div class="menu-quick sm:hidden" aria-label="Quick launch">
+    <div class="menu-quick__row">
+      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.index') }}">
+        <span slot="icon" aria-hidden="true">📏</span>
+        Item E
+      </md-outlined-button>
+      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.placeholder', slug='PHI-repo') }}">
+        <span slot="icon" aria-hidden="true">📁</span>
+        Item A
+      </md-outlined-button>
+      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.placeholder', slug='ihsa-statistics') }}">
+        <span slot="icon" aria-hidden="true">📊</span>
+        Item F
+      </md-outlined-button>
+      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.placeholder', slug='ihsa-calendar') }}">
+        <span slot="icon" aria-hidden="true">📅</span>
+        Item M
+      </md-outlined-button>
+      <md-filled-tonal-button
+        class="menu-quick__more"
+        type="button"
+        data-menu-more
+        aria-controls="menu-grid"
+        aria-expanded="true"
+      >
+        <span slot="icon" class="material-symbols-outlined" aria-hidden="true">apps</span>
+        <span data-menu-more-text>More</span>
+      </md-filled-tonal-button>
+    </div>
+  </div>
+
   <div class="menu-drawer__panel" data-menu-panel>
+    <div class="menu-panel__header sm:hidden">
+      <span class="menu-panel__title">Menu</span>
+      <md-icon-button class="menu-panel__close" type="button" data-menu-toggle aria-label="Close menu">
+        <span class="material-symbols-outlined" aria-hidden="true">close</span>
+      </md-icon-button>
+    </div>
     <section
       id="menu-grid"
-      class="menu-grid grid grid-cols-2 items-stretch gap-2.5 p-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7"
+      class="menu-grid grid grid-cols-1 items-stretch gap-2.5 p-2.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7"
       aria-label="PHI navigation"
     >
       <md-list-item class="menu-tile" type="link" href="{{ url_for('pages.placeholder', slug='PHI-repo') }}">
@@ -131,9 +172,7 @@
         <span slot="headline">Menu Item N</span>
       </md-list-item>
     </section>
+
   </div>
-  <button class="menu-drawer__fab" type="button" data-menu-reopen aria-controls="menu-grid" aria-expanded="false">
-    <span class="material-symbols-outlined" aria-hidden="true">apps</span>
-    <span>Menu</span>
-  </button>
+
 </section>
