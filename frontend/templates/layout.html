@@ -18,39 +18,118 @@
     />
 
     {{ vite_css('src/main.ts') }}
+
+    <script>
+      (() => {
+        const root = document.documentElement;
+        let shownAt = 0;
+        const minVisible = 360;
+
+        const show = () => {
+          if (root.dataset.pageLoading === "true") {
+            return;
+          }
+          root.dataset.pageLoading = "true";
+          shownAt = performance.now();
+        };
+
+        const hide = () => {
+          if (root.dataset.pageLoading !== "true") {
+            return;
+          }
+          const elapsed = performance.now() - shownAt;
+          const remaining = Math.max(minVisible - elapsed, 0);
+          window.setTimeout(() => {
+            delete root.dataset.pageLoading;
+          }, remaining);
+        };
+
+        window.pageLoader = { show, hide };
+
+        let hasIntent = false;
+        try {
+          hasIntent = sessionStorage.getItem("page-loader-intent") === "1";
+          if (hasIntent) {
+            sessionStorage.removeItem("page-loader-intent");
+            show();
+          }
+        } catch {
+          hasIntent = false;
+        }
+
+        const timer = window.setTimeout(() => {
+          if (!hasIntent && document.readyState !== "complete") {
+            show();
+          }
+        }, 260);
+
+        window.addEventListener(
+          "load",
+          () => {
+            window.clearTimeout(timer);
+            hide();
+          },
+          { once: true }
+        );
+
+        window.addEventListener("pageshow", () => {
+          hide();
+        });
+      })();
+    </script>
   </head>
 
   <body class="min-h-screen">
-    <header class="topbar sticky top-0 z-10 flex flex-col items-start gap-4 px-5 py-3.5 md:flex-row md:flex-wrap md:items-center md:justify-between">
-      <div class="brand flex items-center gap-3">
-        <div class="brand-badge" aria-hidden="true">PHI</div>
-        <div class="brand-text flex flex-col gap-0.5">
-          <span class="md-typescale-title-large">{{ brand_name or "Placeholder Tool" }}</span>
-          <span class="md-typescale-label-medium">
-            {{ brand_tagline or "Place Holder" }}
-          </span>
+    <div class="page-loader" role="status" aria-live="polite">
+      <div class="page-loader__stack">
+        <div class="page-loader__halo" aria-hidden="true"></div>
+        <div class="page-loader__orbit" aria-hidden="true"></div>
+        <div class="page-loader__core" aria-hidden="true"></div>
+        <div class="page-loader__text">
+          <span class="page-loader__title">Loading workspace</span>
+          <span class="page-loader__subtitle">Syncing modules and assets</span>
         </div>
       </div>
+    </div>
 
-      <div class="actions flex flex-wrap items-center gap-3">
-        {% block topbar_actions %}
-          <div class="user-chip flex items-center gap-2.5" aria-label="Signed in with Entra ID">
-            <span class="user-avatar">MA</span>
-            <div class="user-info flex flex-col gap-0.5">
-              <span class="user-name">Munteanu, Alexandru</span>
-              <span class="user-meta inline-flex items-center gap-1.5">
-                <span class="entra-logo">E</span>
-                Auto login (Entra ID)
-              </span>
-            </div>
+    <div class="topstack sticky top-0 z-10">
+      <header class="topbar flex flex-col items-start gap-4 px-5 py-3.5 md:flex-row md:flex-wrap md:items-center md:justify-between">
+        <div class="brand flex items-center gap-3">
+          <div class="brand-badge" aria-hidden="true">PHI</div>
+          <div class="brand-text flex flex-col gap-0.5">
+            <span class="md-typescale-title-large">{{ brand_name or "Placeholder Tool" }}</span>
+            <span class="md-typescale-label-medium">
+              {{ brand_tagline or "Place Holder" }}
+            </span>
           </div>
+        </div>
+
+        <div class="actions flex flex-wrap items-center gap-3">
+          {% block topbar_actions %}
+            <div class="user-chip flex items-center gap-2.5" aria-label="Signed in with Entra ID">
+              <span class="user-avatar">MA</span>
+              <div class="user-info flex flex-col gap-0.5">
+                <span class="user-name">Munteanu, Alexandru</span>
+                <span class="user-meta inline-flex items-center gap-1.5">
+                  <span class="entra-logo">E</span>
+                  Auto login (Entra ID)
+                </span>
+              </div>
+            </div>
+          {% endblock %}
+          {% include "partials/asset_health.html" %}
+          <md-icon-button aria-label="Toggle theme" onclick="toggleTheme()">
+            <span class="material-symbols-outlined">dark_mode</span>
+          </md-icon-button>
+        </div>
+      </header>
+
+      <div class="menu-shell container mx-auto px-4 pb-4 md:px-6">
+        {% block subnav %}
+          {% include "partials/menu_grid.html" %}
         {% endblock %}
-        {% include "partials/asset_health.html" %}
-        <md-icon-button aria-label="Toggle theme" onclick="toggleTheme()">
-          <span class="material-symbols-outlined">dark_mode</span>
-        </md-icon-button>
       </div>
-    </header>
+    </div>
 
     <main class="container mx-auto flex flex-col gap-5 px-4 py-5 md:px-6">
       {% block content %}{% endblock %}

@@ -1,31 +1,42 @@
 import json
+import logging
 from functools import lru_cache
 from pathlib import Path
+from typing import Any, Optional
 
 from flask import current_app, url_for
 from markupsafe import Markup
 
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=4)
-def _load_manifest(manifest_path, fallback_path=None):
+def _load_manifest(manifest_path: str, fallback_path: Optional[str] = None) -> dict[str, Any]:
     path = Path(manifest_path)
     if path.exists():
-        return json.loads(path.read_text())
+        return _read_manifest(path)
     if fallback_path:
         fallback = Path(fallback_path)
         if fallback.exists():
-            return json.loads(fallback.read_text())
+            return _read_manifest(fallback)
     return {}
 
 
-def _manifest():
+def _read_manifest(path: Path) -> dict[str, Any]:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning("Failed to load Vite manifest at %s: %s", path, exc)
+        return {}
+
+
+def _manifest() -> dict[str, Any]:
     return _load_manifest(
         current_app.config["VITE_MANIFEST_PATH"],
         current_app.config.get("VITE_MANIFEST_FALLBACK"),
     )
 
 
-def vite_css(entrypoint):
+def vite_css(entrypoint: str) -> Markup:
     if current_app.config.get("VITE_DEV"):
         return Markup("")
     manifest = _manifest()
@@ -39,7 +50,7 @@ def vite_css(entrypoint):
     return Markup("\n".join(tags))
 
 
-def vite_js(entrypoint):
+def vite_js(entrypoint: str) -> Markup:
     if current_app.config.get("VITE_DEV"):
         dev_server = current_app.config["VITE_DEV_SERVER"].rstrip("/")
         tags = [

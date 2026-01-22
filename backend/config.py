@@ -12,3 +12,4 @@ class BaseConfig:
     VITE_DEV = os.getenv("VITE_DEV", "0").lower() in {"1", "true", "yes", "on"}
     VITE_MANIFEST_PATH = (STATIC_DIR / "dist" / ".vite" / "manifest.json").as_posix()
     VITE_MANIFEST_FALLBACK = (STATIC_DIR / "dist" / "manifest.json").as_posix()
+    MAX_ECHO_LENGTH = int(os.getenv("MAX_ECHO_LENGTH", "200"))

@@ -4,12 +4,9 @@
 
 {% block content %}
   <section class="card flex flex-col gap-3">
-    <p class="kicker">Placeholder</p>
+    <p class="kicker">Label</p>
     <h2 class="md-typescale-title-large">{{ page_title }}</h2>
-    <p class="body">
-      This section is a placeholder destination for the navigation menu. Replace it with the real
-      page when the workflow is ready.
-    </p>
-    <md-filled-button href="{{ url_for('pages.index') }}">Back to baselines</md-filled-button>
+    <p class="body">Obfuscated paragraph content for this destination.</p>
+    <md-filled-button href="{{ url_for('pages.index') }}">Primary action</md-filled-button>
   </section>
 {% endblock %}
