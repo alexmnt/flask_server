@@ -1,18 +1,38 @@
 import { test, expect } from '@playwright/test';
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test.describe('menu drawer', () => {
+  test.use({ viewport: { width: 1280, height: 720 } });
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
+  test('shows the navigation grid with menu items', async ({ page }) => {
+    await page.goto('/');
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+    const menuGrid = page.getByRole('region', { name: 'PHI navigation' });
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
+    await expect(menuGrid).toBeVisible();
+    await expect(menuGrid.getByRole('listitem')).toHaveCount(14);
+  });
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+  test('toggles closed and reopens from the fab', async ({ page }) => {
+    await page.goto('/');
+
+    const menuDrawer = page.locator('[data-menu-drawer]');
+    const menuPanel = page.locator('[data-menu-panel]');
+    const menuToggle = page.getByRole('button', { name: 'Hide menu' });
+    const menuReopen = page.locator('[data-menu-reopen]');
+
+    await expect(menuDrawer).toHaveAttribute('data-state', 'open');
+    await expect(menuPanel).toHaveAttribute('aria-hidden', 'false');
+
+    await menuToggle.click();
+
+    await expect(menuDrawer).toHaveAttribute('data-state', 'closed');
+    await expect(menuPanel).toHaveAttribute('aria-hidden', 'true');
+    await expect(menuReopen).toHaveAttribute('aria-hidden', 'false');
+    await expect(menuReopen).toBeVisible();
+
+    await menuReopen.click();
+
+    await expect(menuDrawer).toHaveAttribute('data-state', 'open');
+    await expect(menuPanel).toHaveAttribute('aria-hidden', 'false');
+  });
 });

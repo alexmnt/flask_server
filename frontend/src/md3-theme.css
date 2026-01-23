@@ -518,17 +518,51 @@ html[data-menu-state="closed"] .menu-drawer__fab {
 .menu-drawer__panel {
   overflow: hidden;
   max-height: 1200px;
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
   transition:
-    max-height 0.42s var(--ease-out),
+    max-height 0.36s var(--ease-in-out),
     opacity 0.22s var(--ease-in-out),
-    transform 0.32s var(--ease-out);
+    transform 0.36s var(--ease-in-out);
   transform-origin: top;
+  will-change: max-height, opacity, transform;
+}
+
+.menu-grid > .menu-tile {
+  --menu-index: 0;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.18s var(--ease-in-out),
+    transform 0.24s var(--ease-out);
+  transition-delay: calc(var(--menu-index) * 12ms);
+}
+
+.menu-grid > .menu-tile:nth-child(1) { --menu-index: 0; }
+.menu-grid > .menu-tile:nth-child(2) { --menu-index: 1; }
+.menu-grid > .menu-tile:nth-child(3) { --menu-index: 2; }
+.menu-grid > .menu-tile:nth-child(4) { --menu-index: 3; }
+.menu-grid > .menu-tile:nth-child(5) { --menu-index: 4; }
+.menu-grid > .menu-tile:nth-child(6) { --menu-index: 5; }
+.menu-grid > .menu-tile:nth-child(7) { --menu-index: 6; }
+.menu-grid > .menu-tile:nth-child(8) { --menu-index: 7; }
+.menu-grid > .menu-tile:nth-child(9) { --menu-index: 8; }
+.menu-grid > .menu-tile:nth-child(10) { --menu-index: 9; }
+.menu-grid > .menu-tile:nth-child(11) { --menu-index: 10; }
+.menu-grid > .menu-tile:nth-child(12) { --menu-index: 11; }
+.menu-grid > .menu-tile:nth-child(13) { --menu-index: 12; }
+.menu-grid > .menu-tile:nth-child(14) { --menu-index: 13; }
+
+.menu-drawer[data-state="closed"] .menu-grid > .menu-tile {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition-delay: calc(var(--menu-index) * 8ms);
 }
 
 .menu-drawer[data-state="closed"] .menu-drawer__panel {
   max-height: 0;
   opacity: 0;
-  transform: translateY(-6px);
+  transform: translateY(-10px) scaleY(0.98);
   pointer-events: none;
 }
 
@@ -572,6 +606,11 @@ html[data-menu-state="closed"] .menu-drawer__fab {
   .menu-tile,
   .menu-tile::before {
     transition: none;
+  }
+
+  .menu-drawer__panel,
+  .menu-grid > .menu-tile {
+    animation: none;
   }
 }
 

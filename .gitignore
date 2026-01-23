@@ -4,6 +4,9 @@ __pycache__/
 node_modules/
 frontend/static/dist/
 .DS_Store
+.env
+.env.*
+!.env.example
 
 # Playwright
 /test-results/

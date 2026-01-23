@@ -33,7 +33,7 @@ const assetJs = assetHealth?.querySelector<HTMLElement>('[data-asset="js"]');
 const menuGrid = document.querySelector<HTMLElement>(".menu-grid");
 const menuDrawer = document.querySelector<HTMLElement>("[data-menu-drawer]");
 const menuPanel = menuDrawer?.querySelector<HTMLElement>("[data-menu-panel]");
-const menuToggles = menuDrawer?.querySelectorAll<HTMLElement>("[data-menu-toggle]") ?? [];
+const menuToggles = document.querySelectorAll<HTMLElement>("[data-menu-toggle]");
 const menuToggleText = menuDrawer?.querySelector<HTMLElement>("[data-menu-toggle-text]");
 const menuMore = menuDrawer?.querySelector<HTMLElement>("[data-menu-more]");
 const menuMoreText = menuDrawer?.querySelector<HTMLElement>("[data-menu-more-text]");
