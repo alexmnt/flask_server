@@ -46,7 +46,7 @@
   <section
     class="metric-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
     hx-get="{{ url_for('pages.status_cards') }}"
-    hx-trigger="load, every 90s"
+    hx-trigger="load, every 6000s"
     hx-swap="innerHTML"
     aria-live="polite"
   >
@@ -62,7 +62,7 @@
         <p
           class="body"
           hx-get="{{ url_for('pages.last_sync') }}"
-          hx-trigger="load, every 60s"
+          hx-trigger="load, every 6000s"
           hx-swap="outerHTML"
         >
           Update marker: --
@@ -89,7 +89,7 @@
         </thead>
         <tbody
           hx-get="{{ url_for('pages.baseline_rows') }}"
-          hx-trigger="load, every 600s"
+          hx-trigger="load, every 6000s"
           hx-swap="innerHTML"
           aria-live="polite"
         >

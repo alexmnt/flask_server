@@ -160,10 +160,6 @@ body {
   transition: background 0.25s var(--ease-in-out);
 }
 
-html[data-menu-state="closed"] .menu-shell {
-  display: none;
-}
-
 .main-content {
   padding-top: calc(var(--topstack-height, 0px) + 1.25rem);
 }
@@ -364,6 +360,12 @@ html {
   box-shadow: var(--shadow-sm);
 }
 
+.menu-drawer[data-state="open"] {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: 0;
+}
+
 .menu-drawer__bar {
   display: flex;
   align-items: center;
@@ -516,6 +518,11 @@ html[data-menu-state="closed"] .menu-drawer__fab {
 }
 
 .menu-drawer__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 40;
   overflow: hidden;
   max-height: 1200px;
   opacity: 1;
@@ -526,6 +533,17 @@ html[data-menu-state="closed"] .menu-drawer__fab {
     transform 0.36s var(--ease-in-out);
   transform-origin: top;
   will-change: max-height, opacity, transform;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  border: 1px solid var(--border);
+  border-top: 0;
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--md-sys-color-surface-container-high) 82%, var(--md-sys-color-primary) 18%),
+    var(--md-sys-color-surface-container)
+  );
+  box-shadow: var(--shadow-md);
 }
 
 .menu-grid > .menu-tile {
@@ -620,34 +638,12 @@ html[data-menu-state="closed"] .menu-drawer__fab {
     gap: 8px;
   }
 
-  .menu-drawer[data-state="open"] {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    border-bottom: 0;
-  }
-
   .menu-tile::after {
     content: none;
   }
 
   .menu-drawer__panel {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 100%;
-    z-index: 40;
     max-height: min(70vh, calc(100vh - var(--topbar-height, 0px) - 140px));
-    overflow-x: hidden;
-    overflow-y: auto;
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-    border: 1px solid var(--border);
-    border-top: 0;
-    background: linear-gradient(
-      140deg,
-      color-mix(in srgb, var(--md-sys-color-surface-container-high) 82%, var(--md-sys-color-primary) 18%),
-      var(--md-sys-color-surface-container)
-    );
-    box-shadow: var(--shadow-md);
   }
 
   .menu-panel__header {
