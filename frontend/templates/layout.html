@@ -145,6 +145,50 @@
       {% block content %}{% endblock %}
     </main>
 
+    <aside class="clippy-assistant" data-clippy-root data-state="closed">
+      <button
+        class="clippy-trigger"
+        type="button"
+        data-clippy-toggle
+        aria-controls="clippy-panel"
+        aria-expanded="false"
+        aria-label="Open assistant"
+      >
+        <span class="clippy-trigger-animation" data-clippy-trigger-animation aria-hidden="true"></span>
+        <span class="clippy-trigger-logo" aria-hidden="true">AM18</span>
+      </button>
+
+      <section
+        id="clippy-panel"
+        class="clippy-panel"
+        data-clippy-panel
+        aria-hidden="true"
+        aria-label="Assistant"
+      >
+        <header class="clippy-head">
+          <h2>Assistant</h2>
+          <button type="button" data-clippy-close aria-label="Close assistant">✕</button>
+        </header>
+        <div class="clippy-log" data-clippy-log aria-live="polite">
+          <p class="clippy-message assistant">
+            Ask anything and get a live response.
+          </p>
+        </div>
+        <form class="clippy-form" data-clippy-form>
+          <label for="clippy-input" class="sr-only">Message for assistant</label>
+          <textarea
+            id="clippy-input"
+            name="message"
+            rows="2"
+            data-clippy-input
+            maxlength="2000"
+            placeholder="Ask for help..."
+          ></textarea>
+          <button type="submit" data-clippy-send>Send</button>
+        </form>
+      </section>
+    </aside>
+
     <footer class="footer md-typescale-body-small px-4 py-6 text-center md:px-5">
       Built with Flask • Material Design 3-ish UI via Material Web Components
     </footer>

@@ -44,6 +44,13 @@ python app.py
 
 - `VITE_DEV=1` enables the Vite dev server and HMR.
 - `VITE_DEV_SERVER` overrides the dev server URL (default: `http://localhost:5173`).
+- `AZURE_OPENAI_ENDPOINT` Azure resource endpoint, e.g. `https://<resource>.openai.azure.com`.
+- `AZURE_OPENAI_API_KEY` Azure OpenAI API key.
+- `AZURE_OPENAI_DEPLOYMENT` Chat-capable deployment name.
+- `AZURE_OPENAI_API_VERSION` API version for chat completions (default: `2024-02-15-preview`).
+- `AZURE_OPENAI_MAX_TOKENS` Max output tokens for Clippy responses (default: `450`).
+- `AZURE_OPENAI_TEMPERATURE` Sampling temperature (default: `0.65`).
+- `AZURE_OPENAI_SYSTEM_PROMPT` Optional system prompt override for Clippy behavior.
 
 ## Project layout
 

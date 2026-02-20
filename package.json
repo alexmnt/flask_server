@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@material/web": "^2.4.1",
-    "htmx.org": "^1.9.12"
+    "htmx.org": "^1.9.12",
+    "lottie-web": "^5.13.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",

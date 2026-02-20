@@ -1,0 +1,34 @@
+- lead time to affirmation
+- when did they complete the affirmation
+- when did the affirmation notice was sent
+- multiple upstream sources (CIS + STIG + ICC + UBS / Internal)
+- remediation guidance present
+- audit present
+- build types descriptions
+- last 3 months (Mid October) should be negative penalize it
+
+
+- admin panel should be powerfull enough to manage all these settings
+  - meetings CRUD
+  - deferral management
+  - deficiencies management
+  - 
+
+- pacman 
+- reconciliation
+
+- upstream reconciliation
+- spider to query upstream sources
+ - docx, 
+
+
+- admin, scheduler- worker architecture flask server (APScheduler)
+
+- this should be a rode 
+
+
+
+
+
+
+ 

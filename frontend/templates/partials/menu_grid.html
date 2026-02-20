@@ -1,8 +1,8 @@
 <section class="menu-drawer" data-menu-drawer data-state="open">
   <div class="menu-drawer__bar">
     <div class="menu-drawer__title">
-      <p class="kicker">Quick launch</p>
-      <p class="menu-drawer__headline">PHI workspace navigation</p>
+      <p class="kicker">Workflow</p>
+      <p class="menu-drawer__headline">Left-to-right submission flow</p>
     </div>
 
     <div class="menu-drawer__actions">
@@ -21,23 +21,19 @@
     </div>
   </div>
 
-  <div class="menu-quick sm:hidden" aria-label="Quick launch">
+  <div class="menu-quick sm:hidden" aria-label="Workflow steps">
     <div class="menu-quick__row">
-      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.index') }}">
-        <span slot="icon" aria-hidden="true">📏</span>
-        Item E
+      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.placeholder', slug='workflow-setup') }}">
+        <span slot="icon" class="material-symbols-outlined" aria-hidden="true">settings_suggest</span>
+        Setup
       </md-outlined-button>
-      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.placeholder', slug='PHI-repo') }}">
-        <span slot="icon" aria-hidden="true">📁</span>
-        Item A
+      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.placeholder', slug='workflow-controls') }}">
+        <span slot="icon" class="material-symbols-outlined" aria-hidden="true">tune</span>
+        Controls
       </md-outlined-button>
-      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.placeholder', slug='ihsa-statistics') }}">
-        <span slot="icon" aria-hidden="true">📊</span>
-        Item F
-      </md-outlined-button>
-      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.placeholder', slug='ihsa-calendar') }}">
-        <span slot="icon" aria-hidden="true">📅</span>
-        Item M
+      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.placeholder', slug='workflow-review-submit') }}">
+        <span slot="icon" class="material-symbols-outlined" aria-hidden="true">fact_check</span>
+        Review &amp; Submit
       </md-outlined-button>
       <md-filled-tonal-button
         class="menu-quick__more"
@@ -61,116 +57,107 @@
     </div>
     <section
       id="menu-grid"
-      class="menu-grid grid grid-cols-1 items-stretch gap-2.5 p-2.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7"
-      aria-label="PHI navigation"
+      class="menu-grid grid grid-cols-1 items-stretch gap-2.5 p-2.5"
+      aria-label="Workflow navigation"
     >
-      <md-list-item class="menu-tile" type="link" href="{{ url_for('pages.placeholder', slug='PHI-repo') }}">
-        <span slot="start" class="menu-emoji">📁</span>
-        <span slot="headline">Menu Item A</span>
-      </md-list-item>
-      <md-list-item
-        class="menu-tile"
-        type="link"
-        href="{{ url_for('pages.placeholder', slug='terms-of-reference') }}"
-      >
-        <span slot="start" class="menu-emoji">📜</span>
-        <span slot="headline">Menu Item B</span>
-      </md-list-item>
-      <md-list-item
-        class="menu-tile"
-        type="link"
-        href="{{ url_for('pages.placeholder', slug='platform-management') }}"
-      >
-        <span slot="start" class="menu-emoji">🧭</span>
-        <span slot="headline">Menu Item C</span>
-      </md-list-item>
-      <md-list-item
-        class="menu-tile"
-        type="link"
-        href="{{ url_for('pages.placeholder', slug='stakeholder-actions') }}"
-      >
-        <span slot="start" class="menu-emoji">👥</span>
-        <span slot="headline">Menu Item D</span>
-      </md-list-item>
-      <md-list-item class="menu-tile" type="link" href="{{ url_for('pages.index') }}" data-active="true">
-        <span slot="start" class="menu-emoji">📏</span>
-        <span slot="headline">Menu Item E</span>
-      </md-list-item>
-      <md-list-item
-        class="menu-tile"
-        type="link"
-        href="{{ url_for('pages.placeholder', slug='ihsa-statistics') }}"
-      >
-        <span slot="start" class="menu-emoji">📊</span>
-        <span slot="headline">Menu Item F</span>
-      </md-list-item>
-      <md-list-item
-        class="menu-tile"
-        type="link"
-        href="{{ url_for('pages.placeholder', slug='phi-upstreams') }}"
-      >
-        <span slot="start" class="menu-emoji">⬆️</span>
-        <span slot="headline">Menu Item G</span>
-      </md-list-item>
-      <md-list-item
-        class="menu-tile"
-        type="link"
-        href="{{ url_for('pages.placeholder', slug='phi-reporting') }}"
-      >
-        <span slot="start" class="menu-emoji">📝</span>
-        <span slot="headline">Menu Item H</span>
-      </md-list-item>
-      <md-list-item
-        class="menu-tile"
-        type="link"
-        href="{{ url_for('pages.placeholder', slug='apv-reporting') }}"
-      >
-        <span slot="start" class="menu-emoji">📋</span>
-        <span slot="headline">Menu Item I</span>
-      </md-list-item>
-      <md-list-item
-        class="menu-tile"
-        type="link"
-        href="{{ url_for('pages.placeholder', slug='go-to-green-dashboard') }}"
-      >
-        <span slot="start" class="menu-emoji">🟢</span>
-        <span slot="headline">Menu Item J</span>
-        <span slot="supporting-text">Dashboard</span>
-      </md-list-item>
-      <md-list-item
-        class="menu-tile"
-        type="link"
-        href="{{ url_for('pages.placeholder', slug='remediation-guidelines-svcm') }}"
-      >
-        <span slot="start" class="menu-emoji">🛠️</span>
-        <span slot="headline">Menu Item K</span>
-        <span slot="supporting-text">for SVCM</span>
-      </md-list-item>
-      <md-list-item
-        class="menu-tile"
-        type="link"
-        href="{{ url_for('pages.placeholder', slug='frequently-asked-questions') }}"
-      >
-        <span slot="start" class="menu-emoji">❓</span>
-        <span slot="headline">Menu Item L</span>
-        <span slot="supporting-text">Questions</span>
-      </md-list-item>
-      <md-list-item
-        class="menu-tile"
-        type="link"
-        href="{{ url_for('pages.placeholder', slug='ihsa-calendar') }}"
-      >
-        <span slot="start" class="menu-emoji">📅</span>
-        <span slot="headline">Menu Item M</span>
-      </md-list-item>
-      <md-list-item
-        class="menu-tile"
-        type="link"
-        href="{{ url_for('pages.placeholder', slug='PHI-achievements') }}"
-      >
-        <span slot="start" class="menu-emoji">🏆</span>
-        <span slot="headline">Menu Item N</span>
-      </md-list-item>
+      <div class="workflow-menu" aria-label="Workflow menu">
+        <div class="workflow-menu__header">
+          <div class="workflow-menu__title">
+            <p class="kicker">Workflow</p>
+            <p class="workflow-menu__headline">Navigate the three-stage path.</p>
+          </div>
+          <div class="workflow-menu__meta">
+            <span class="workflow-menu__pill">3 stages</span>
+            <span class="workflow-menu__path">Setup -&gt; Controls -&gt; Review &amp; Submit</span>
+          </div>
+        </div>
+        <ol class="workflow-menu__track">
+          <li class="workflow-step workflow-step--setup">
+            <details class="workflow-step__details">
+              <summary class="workflow-step__summary">
+                <span class="workflow-step__index">01</span>
+                <span class="workflow-step__text">
+                  <span class="workflow-step__title">Setup</span>
+                  <span class="workflow-step__subtitle">Connect, scope, assign.</span>
+                </span>
+                <span class="material-symbols-outlined workflow-step__chevron" aria-hidden="true">
+                  expand_more
+                </span>
+              </summary>
+              <div class="workflow-step__body">
+                <p class="workflow-step__desc">Prepare inputs and access before building controls.</p>
+                <div class="workflow-step__actions">
+                  <a class="workflow-step__action" href="{{ url_for('pages.placeholder', slug='setup-sources') }}">
+                    Sources
+                  </a>
+                  <a class="workflow-step__action" href="{{ url_for('pages.placeholder', slug='setup-scope') }}">
+                    Scope
+                  </a>
+                  <a class="workflow-step__action" href="{{ url_for('pages.placeholder', slug='setup-owners') }}">
+                    Owners
+                  </a>
+                </div>
+              </div>
+            </details>
+          </li>
+          <li class="workflow-step workflow-step--controls">
+            <details class="workflow-step__details">
+              <summary class="workflow-step__summary">
+                <span class="workflow-step__index">02</span>
+                <span class="workflow-step__text">
+                  <span class="workflow-step__title">Controls</span>
+                  <span class="workflow-step__subtitle">Rules, thresholds, automation.</span>
+                </span>
+                <span class="material-symbols-outlined workflow-step__chevron" aria-hidden="true">
+                  expand_more
+                </span>
+              </summary>
+              <div class="workflow-step__body">
+                <p class="workflow-step__desc">Configure logic, exceptions, and monitoring signals.</p>
+                <div class="workflow-step__actions">
+                  <a class="workflow-step__action" href="{{ url_for('pages.placeholder', slug='controls-policies') }}">
+                    Policies
+                  </a>
+                  <a class="workflow-step__action" href="{{ url_for('pages.placeholder', slug='controls-thresholds') }}">
+                    Thresholds
+                  </a>
+                  <a class="workflow-step__action" href="{{ url_for('pages.placeholder', slug='controls-automation') }}">
+                    Automation
+                  </a>
+                </div>
+              </div>
+            </details>
+          </li>
+          <li class="workflow-step workflow-step--review">
+            <details class="workflow-step__details">
+              <summary class="workflow-step__summary">
+                <span class="workflow-step__index">03</span>
+                <span class="workflow-step__text">
+                  <span class="workflow-step__title">Review &amp; Submit</span>
+                  <span class="workflow-step__subtitle">Validate, sign-off, launch.</span>
+                </span>
+                <span class="material-symbols-outlined workflow-step__chevron" aria-hidden="true">
+                  expand_more
+                </span>
+              </summary>
+              <div class="workflow-step__body">
+                <p class="workflow-step__desc">Review outputs, collect approvals, and submit.</p>
+                <div class="workflow-step__actions">
+                  <a class="workflow-step__action" href="{{ url_for('pages.placeholder', slug='review-preview') }}">
+                    Preview
+                  </a>
+                  <a class="workflow-step__action" href="{{ url_for('pages.placeholder', slug='review-signoff') }}">
+                    Sign-off
+                  </a>
+                  <a class="workflow-step__action" href="{{ url_for('pages.placeholder', slug='review-submit') }}">
+                    Submit
+                  </a>
+                </div>
+              </div>
+            </details>
+          </li>
+        </ol>
+      </div>
     </section>
 
   </div>
