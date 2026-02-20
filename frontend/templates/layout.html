@@ -92,7 +92,14 @@
       </div>
     </div>
 
-    <div class="topstack">
+    <div
+      class="topstack"
+      hx-boost="true"
+      hx-target="#app-main"
+      hx-select="#app-main"
+      hx-swap="outerHTML transition:true"
+      hx-push-url="true"
+    >
       <header class="topbar">
         <div class="container mx-auto flex flex-col items-start gap-4 px-4 py-3.5 md:flex-row md:flex-wrap md:items-center md:justify-between md:px-6">
           <div class="brand flex items-center gap-3">
@@ -112,6 +119,11 @@
               </span>
             </div>
           </div>
+
+          <nav class="spa-nav" aria-label="Primary pages">
+            <a class="spa-nav__link" data-spa-link href="{{ url_for('pages.index') }}">Baselines</a>
+            <a class="spa-nav__link" data-spa-link href="{{ url_for('pages.status') }}">Status</a>
+          </nav>
 
           <div class="actions flex flex-wrap items-center gap-3 w-full md:w-auto md:justify-end">
             {% block topbar_actions %}
@@ -141,7 +153,12 @@
       </div>
     </div>
 
-    <main class="main-content container mx-auto flex flex-col gap-5 px-4 pb-5 md:px-6">
+    <main
+      id="app-main"
+      data-spa-main
+      hx-history-elt
+      class="main-content container mx-auto flex flex-col gap-5 px-4 pb-5 md:px-6"
+    >
       {% block content %}{% endblock %}
     </main>
 
@@ -174,7 +191,7 @@
             Ask anything and get a live response.
           </p>
         </div>
-        <form class="clippy-form" data-clippy-form>
+        <form class="clippy-form" data-clippy-form hx-boost="false">
           <label for="clippy-input" class="sr-only">Message for assistant</label>
           <textarea
             id="clippy-input"

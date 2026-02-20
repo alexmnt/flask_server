@@ -23,15 +23,39 @@
 
   <div class="menu-quick sm:hidden" aria-label="Workflow steps">
     <div class="menu-quick__row">
-      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.placeholder', slug='workflow-setup') }}">
+      <md-outlined-button
+        class="menu-quick__item"
+        href="{{ url_for('pages.placeholder', slug='workflow-setup') }}"
+        hx-get="{{ url_for('pages.placeholder', slug='workflow-setup') }}"
+        hx-target="#app-main"
+        hx-select="#app-main"
+        hx-swap="outerHTML transition:true"
+        hx-push-url="true"
+      >
         <span slot="icon" class="material-symbols-outlined" aria-hidden="true">settings_suggest</span>
         Setup
       </md-outlined-button>
-      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.placeholder', slug='workflow-controls') }}">
+      <md-outlined-button
+        class="menu-quick__item"
+        href="{{ url_for('pages.placeholder', slug='workflow-controls') }}"
+        hx-get="{{ url_for('pages.placeholder', slug='workflow-controls') }}"
+        hx-target="#app-main"
+        hx-select="#app-main"
+        hx-swap="outerHTML transition:true"
+        hx-push-url="true"
+      >
         <span slot="icon" class="material-symbols-outlined" aria-hidden="true">tune</span>
         Controls
       </md-outlined-button>
-      <md-outlined-button class="menu-quick__item" href="{{ url_for('pages.placeholder', slug='workflow-review-submit') }}">
+      <md-outlined-button
+        class="menu-quick__item"
+        href="{{ url_for('pages.placeholder', slug='workflow-review-submit') }}"
+        hx-get="{{ url_for('pages.placeholder', slug='workflow-review-submit') }}"
+        hx-target="#app-main"
+        hx-select="#app-main"
+        hx-swap="outerHTML transition:true"
+        hx-push-url="true"
+      >
         <span slot="icon" class="material-symbols-outlined" aria-hidden="true">fact_check</span>
         Review &amp; Submit
       </md-outlined-button>

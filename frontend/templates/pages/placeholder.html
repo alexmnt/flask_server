@@ -7,6 +7,15 @@
     <p class="kicker">Label</p>
     <h2 class="md-typescale-title-large">{{ page_title }}</h2>
     <p class="body">Obfuscated paragraph content for this destination.</p>
-    <md-filled-button href="{{ url_for('pages.index') }}">Primary action</md-filled-button>
+    <md-filled-button
+      href="{{ url_for('pages.index') }}"
+      hx-get="{{ url_for('pages.index') }}"
+      hx-target="#app-main"
+      hx-select="#app-main"
+      hx-swap="outerHTML transition:true"
+      hx-push-url="true"
+    >
+      Primary action
+    </md-filled-button>
   </section>
 {% endblock %}

@@ -51,18 +51,9 @@ const CLIPPY_WHITE_LAYER_NAMES = new Set([
   "Ellipse 13",
 ]);
 const CLIPPY_WHITE_TONE_THRESHOLD = 0.94;
+const SPA_MAIN_SELECTOR = "[data-spa-main]";
 
 const navTabs = document.querySelector<MdTabs>('md-tabs[data-nav="primary"]');
-const statusPill = document.querySelector<HTMLElement>('[data-status="pill"]');
-const statusText = document.querySelector<HTMLElement>('[data-status="text"]');
-const statusTime = document.querySelector<HTMLElement>('[data-status="time"]');
-const statusLatency = document.querySelector<HTMLElement>('[data-status="latency"]');
-const healthButton = document.querySelector<HTMLElement>('[data-action="health"]');
-const seedButton = document.querySelector<HTMLElement>('[data-action="seed"]');
-const form = document.querySelector<HTMLFormElement>('[data-form="echo"]');
-const clearButton = document.querySelector<HTMLElement>('[data-action="clear"]');
-const echoResult = document.querySelector<HTMLElement>('[data-echo="result"]');
-const messageField = form?.querySelector<MdTextField>('md-outlined-text-field');
 const assetHealth = document.querySelector<HTMLElement>('[data-asset-health]');
 const assetCss = assetHealth?.querySelector<HTMLElement>('[data-asset="css"]');
 const assetJs = assetHealth?.querySelector<HTMLElement>('[data-asset="js"]');
@@ -95,7 +86,31 @@ const STATUS_LABELS: Record<string, string> = {
   loading: "Checking",
 };
 
-const hasStatusUI = Boolean(statusPill && statusText && statusTime && statusLatency);
+type StatusElements = {
+  pill: HTMLElement;
+  text: HTMLElement;
+  time: HTMLElement;
+  latency: HTMLElement;
+};
+
+const getStatusElements = (): StatusElements | null => {
+  const pill = document.querySelector<HTMLElement>('[data-status="pill"]');
+  const text = document.querySelector<HTMLElement>('[data-status="text"]');
+  const time = document.querySelector<HTMLElement>('[data-status="time"]');
+  const latency = document.querySelector<HTMLElement>('[data-status="latency"]');
+  if (!pill || !text || !time || !latency) {
+    return null;
+  }
+  return { pill, text, time, latency };
+};
+
+const getEchoField = (scope: ParentNode = document): MdTextField | null =>
+  scope.querySelector<MdTextField>('md-outlined-text-field');
+
+const getEchoResult = (): HTMLElement | null => document.querySelector<HTMLElement>('[data-echo="result"]');
+
+const isSpaMainTarget = (target: HTMLElement | null): boolean =>
+  Boolean(target?.matches(SPA_MAIN_SELECTOR));
 
 const syncTopstackHeight = () => {
   if (!topstack) {
@@ -133,11 +148,13 @@ const fetchJson = async <T>(input: RequestInfo | URL, options: FetchOptions = {}
   }
 };
 
-const showPageLoader = () => {
-  try {
-    sessionStorage.setItem("page-loader-intent", "1");
-  } catch {
-    // Ignore storage errors (private mode, disabled storage).
+const showPageLoader = (persistIntent = true) => {
+  if (persistIntent) {
+    try {
+      sessionStorage.setItem("page-loader-intent", "1");
+    } catch {
+      // Ignore storage errors (private mode, disabled storage).
+    }
   }
   if (window.pageLoader?.show) {
     window.pageLoader.show();
@@ -614,16 +631,17 @@ const streamClippyReply = async (message: string) => {
   }
 };
 
-function setStatus(state?: string, text?: string) {
-  if (!hasStatusUI || !statusPill || !statusText) {
+function setStatus(state?: string, text?: string, elements: StatusElements | null = getStatusElements()) {
+  if (!elements) {
     return;
   }
-  statusPill.classList.remove("ok", "error", "loading");
+  const { pill, text: statusText } = elements;
+  pill.classList.remove("ok", "error", "loading");
   if (state) {
-    statusPill.classList.add(state);
-    statusPill.textContent = STATUS_LABELS[state] || "Status";
+    pill.classList.add(state);
+    pill.textContent = STATUS_LABELS[state] || "Status";
   }
-  if (text) {
+  if (typeof text === "string") {
     statusText.textContent = text;
   }
 }
@@ -640,29 +658,30 @@ function updateAssetHealth() {
 }
 
 async function checkHealth() {
-  if (!hasStatusUI || !statusTime || !statusLatency) {
+  const statusElements = getStatusElements();
+  if (!statusElements) {
     return;
   }
-  setStatus("loading", "Contacting /api/health...");
+  setStatus("loading", "Contacting /api/health...", statusElements);
   const start = performance.now();
   try {
     const data = await fetchJson<HealthResponse>("/api/health");
     const latency = Math.round(performance.now() - start);
     const timeValue = new Date(data.server_time).toLocaleString();
 
-    statusTime.textContent = timeValue;
-    statusLatency.textContent = `${latency} ms`;
-    setStatus("ok", "Server healthy and responding.");
+    statusElements.time.textContent = timeValue;
+    statusElements.latency.textContent = `${latency} ms`;
+    setStatus("ok", "Server healthy and responding.", statusElements);
   } catch (error) {
-    statusTime.textContent = "--";
-    statusLatency.textContent = "--";
+    statusElements.time.textContent = "--";
+    statusElements.latency.textContent = "--";
     const message =
       error instanceof Error ? error.message : "Server unreachable or offline.";
-    setStatus("error", message);
+    setStatus("error", message, statusElements);
   }
 }
 
-async function sendEcho(message: string) {
+async function sendEcho(message: string, echoResult: HTMLElement | null = getEchoResult()) {
   if (!echoResult) {
     return;
   }
@@ -777,7 +796,7 @@ if (menuDrawer) {
     if (targetAttr && targetAttr !== "_self") {
       return;
     }
-    showPageLoader();
+    showPageLoader(false);
   });
 }
 
@@ -856,6 +875,44 @@ if (menuPrefetchRoot) {
   menuPrefetchRoot.addEventListener("focusin", onPrefetchIntent);
 }
 
+const normalizePath = (value: string): string => {
+  const normalized = value.replace(/\/+$/, "");
+  return normalized || "/";
+};
+
+const syncSpaNavState = () => {
+  const currentPath = normalizePath(window.location.pathname);
+  document.querySelectorAll<HTMLAnchorElement>("[data-spa-link]").forEach((link) => {
+    const href = link.getAttribute("href");
+    if (!href) {
+      link.classList.remove("is-active");
+      link.removeAttribute("aria-current");
+      return;
+    }
+    let hrefPath = "";
+    try {
+      hrefPath = normalizePath(new URL(href, window.location.origin).pathname);
+    } catch {
+      hrefPath = "";
+    }
+    const isActive = hrefPath === currentPath;
+    link.classList.toggle("is-active", isActive);
+    if (isActive) {
+      link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  });
+};
+
+const bootstrapCurrentPage = () => {
+  syncSpaNavState();
+  if (getStatusElements()) {
+    void checkHealth();
+  }
+  syncTopstackHeight();
+};
+
 if (clippyRoot) {
   setClippyState("closed");
   void initializeClippyTriggerAnimation();
@@ -909,45 +966,65 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-if (healthButton) {
-  healthButton.addEventListener("click", () => {
-    checkHealth();
-  });
-}
+document.addEventListener("click", (event) => {
+  const target = event.target as HTMLElement | null;
+  if (!target) {
+    return;
+  }
 
-if (seedButton && messageField) {
-  seedButton.addEventListener("click", () => {
-    messageField.value = "Quick sanity check from the MD3 UI";
-    messageField.focus();
-  });
-}
-
-if (form && messageField) {
-  form.addEventListener("submit", (event) => {
+  const healthTrigger = target.closest<HTMLElement>('[data-action="health"]');
+  if (healthTrigger) {
     event.preventDefault();
-    const message = (messageField.value || "").trim();
-    if (!message) {
-      if (echoResult) {
-        echoResult.textContent = "Please add a message before sending.";
-      }
+    void checkHealth();
+    return;
+  }
+
+  const seedTrigger = target.closest<HTMLElement>('[data-action="seed"]');
+  if (seedTrigger) {
+    event.preventDefault();
+    const formEl = document.querySelector<HTMLFormElement>('[data-form="echo"]');
+    const field = formEl ? getEchoField(formEl) : null;
+    if (!field) {
       return;
     }
-    sendEcho(message);
-  });
-}
+    field.value = "Quick sanity check from the MD3 UI";
+    field.focus();
+    return;
+  }
 
-if (clearButton && messageField) {
-  clearButton.addEventListener("click", () => {
-    messageField.value = "";
-    if (echoResult) {
-      echoResult.textContent = "Nothing yet.";
+  const clearTrigger = target.closest<HTMLElement>('[data-action="clear"]');
+  if (clearTrigger) {
+    event.preventDefault();
+    const formEl = document.querySelector<HTMLFormElement>('[data-form="echo"]');
+    const field = formEl ? getEchoField(formEl) : null;
+    if (field) {
+      field.value = "";
     }
-  });
-}
+    const result = getEchoResult();
+    if (result) {
+      result.textContent = "Nothing yet.";
+    }
+  }
+});
 
-if (healthButton) {
-  checkHealth();
-}
+document.addEventListener("submit", (event) => {
+  const submitted = event.target;
+  if (!(submitted instanceof HTMLFormElement) || submitted.dataset.form !== "echo") {
+    return;
+  }
+  event.preventDefault();
+
+  const field = getEchoField(submitted);
+  const result = getEchoResult();
+  const message = (field?.value || "").trim();
+  if (!message) {
+    if (result) {
+      result.textContent = "Please add a message before sending.";
+    }
+    return;
+  }
+  void sendEcho(message, result);
+});
 
 updateAssetHealth();
 setTimeout(updateAssetHealth, 250);
